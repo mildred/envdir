@@ -1,5 +1,19 @@
 #!/bin/zsh
 
+# Set environment variables from file
+loadenvfile() {
+	local envs=()
+	while read line; do
+		if [[ -n "$line" ]]; then
+			eval "export ${line%%=*}=\"\${line#*=}\""
+			envs+=("${line%%=*}")
+		fi
+	done <<<"$(cat "$1")"
+	if [[ ${envs[#]} -gt 0 ]]; then
+		echo "Set ${envs[*]}"
+	fi
+}
+
 # Pushes $1 to the stack
 pushs() {
 	local exploded_stack
@@ -69,14 +83,14 @@ flushenv() {
 
 # Pushes the env on the stack
 pushenv() {
-	pushs $(env | base64 -)
+	pushs $(env | base64 -w0 -)
 }
 
 # Pops the env from the stack
 popenv() {
 	local envs envar varname
 	pops envs
-	IFS=$'\n' envs=( $(echo $envs | base64 -D -) )
+	IFS=$'\n' envs=( $(echo $envs | base64 -w0 -d -) )
 
 	for envar in $envs; do
 		varname=$(echo $envar | awk -F '=' '{print $1}')

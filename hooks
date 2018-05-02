@@ -11,7 +11,7 @@ function envdir_chpwd {
 		if [[ -f $PWD/.envrc ]] then
 			echo "Entering an envdirred folder"
 			pushenv
-			source $PWD/.envrc
+			loadenvfile $PWD/.envrc
 		fi
 	fi
 
