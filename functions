@@ -8,7 +8,7 @@ loadenvfile() {
 			eval "export ${line%%=*}=\"\${line#*=}\""
 			envs+=("${line%%=*}")
 		fi
-	done <<<"$(cat "$1")"
+	done <<<"$(cat "${1:-.envrc}")"
 	if [[ ${envs[#]} -gt 0 ]]; then
 		echo "Set ${envs[*]}"
 	fi
